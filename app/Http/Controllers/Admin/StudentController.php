@@ -11,17 +11,16 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index()
-{
-    $students = Student::all();
-    return view('admin.student.index', compact('students'));
-}
-
+    public function index()
+    {
+        $students = Student::all();
+        return view('admin.student.index', compact('students'));
+    }
 
     /**
      * Show the form for creating a new resource.
      */
-   public function create()
+    public function create()
     {
         return view('admin.student.create');
     }
@@ -31,15 +30,15 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nis' => 'required|unique:students',
-            'nama_lengkap' => 'required',
-            'jenis_kelamin' => 'required',
-            'nisn' => 'required|unique:students',
-        ]);
+    $request->validate([
+        'nis' => 'required|unique:students',
+        'nama_lengkap' => 'required',
+        'jenis_kelamin' => 'required',
+        'nisn' => 'required|unique:students',
+    ]);
 
-        Student::create($request->all());
-        return redirect()->route('admin.students.index')->with('success', 'Student created successfully.');
+    Student::create($request->all());
+    return redirect()->route('admin.students.index')->with('success', 'Data berhasil disimpan!');
     }
 
     /**
@@ -47,7 +46,8 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $student = Student::findOrFail($id);
+        return view('admin.student.show', compact('student'));
     }
 
     /**
@@ -55,16 +55,25 @@ class StudentController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $student = Student::findOrFail($id);
+        return view('admin.student.edit', compact('student'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+    public function update(Request $request, Student $student)
+{
+    $validated = $request->validate([
+        'nis' => 'required',
+        'nama_lengkap' => 'required',
+        'jenis_kelamin' => 'required',
+        'nisn' => 'required',
+    ]);
+
+    $student->update($validated);
+    return redirect()->route('admin.students.index')->with('success', 'Data siswa berhasil diperbarui');
+}
 
     /**
      * Remove the specified resource from storage.
